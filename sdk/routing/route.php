@@ -5,7 +5,8 @@ namespace sdk\routing;
 require_once __DIR__ . '/../http/request.php';
 require_once __DIR__ . '/../http/response.php';
 
-use sdk\http;
+use sdk\http\request as request;
+use sdk\http\response as response;
 
 class route
 {
@@ -20,7 +21,7 @@ class route
         $this->callback = $callback;
     }
     
-    public function match(http\request $request) : bool
+    public function match(request $request) : bool
     {
         if (!in_array($request->get_header('REQUEST_METHOD'), $this->request_methods))
         {
@@ -35,9 +36,9 @@ class route
         return true;
     }
     
-    public function execute(http\request $request) : route
+    public function execute(request $request) : route
     {
-        $response = new http\response();
+        $response = new response();
         call_user_func_array($this->callback, [$request, $response]);
         
         return $this;
