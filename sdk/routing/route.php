@@ -23,12 +23,12 @@ class route
     
     public function match(request $request) : bool
     {
-        if (!in_array($request->get_header('REQUEST_METHOD'), $this->request_methods))
+        if (!in_array($request->get_server_var('REQUEST_METHOD'), $this->request_methods))
         {
             return false;
         }
         
-        if ($request->get_header('REQUEST_URI') !== $this->request_uri)
+        if ($request->get_server_var('REQUEST_URI') !== $this->request_uri)
         {
             return false;
         }

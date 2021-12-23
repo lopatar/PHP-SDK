@@ -8,6 +8,7 @@ class request
     private array $get_array;
     private array $server_array;
     private array $cookie_array;
+    private array $headers;
     
     public function __construct()
     {
@@ -15,6 +16,7 @@ class request
         $this->get_array = $_GET;
         $this->server_array = $_SERVER;
         $this->cookie_array = $_COOKIE;
+        $this->headers = getallheaders();
     }
     
     public function get_post($key)
@@ -28,6 +30,11 @@ class request
     }
     
     public function get_header($key)
+    {
+        return $this->headers[$key] ?? null;
+    }
+    
+    public function get_server_var($key)
     {
         return $this->server_array[$key] ?? null;
     }

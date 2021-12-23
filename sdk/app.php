@@ -41,7 +41,7 @@ class app
         else
         {
             $response = new response();
-            $protocol_version = $this->request->get_header('SERVER_PROTOCOL');
+            $protocol_version = $this->request->get_server_var('SERVER_PROTOCOL');
             
             $response->add_header_full("$protocol_version 404 Not found");
             $response->send();

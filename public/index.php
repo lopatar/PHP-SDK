@@ -9,7 +9,7 @@ use sdk\app as app;
 $app = new app();
 
 $app->get('/test', function (request $request, response $response) : response {
-    $response->set_body('test executed');
+    $response->set_body('test route');
     return $response;
 });
 
