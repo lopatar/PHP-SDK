@@ -1,10 +1,6 @@
 <?php
 
-const APP_DIR = '/var/www/html/digiamp.xyz/sdk/';
-
-$GLOBALS['APP_DIR'] = APP_DIR;
-
-require APP_DIR . 'app.php';
+require __DIR__ . '/../sdk/app.php';
 
 use sdk\http\request as request;
 use sdk\http\response as response;

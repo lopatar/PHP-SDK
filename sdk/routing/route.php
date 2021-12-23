@@ -2,8 +2,8 @@
 
 namespace sdk\routing;
 
-require_once $GLOBALS['APP_DIR'] . 'http/request.php';
-require_once $GLOBALS['APP_DIR'] . 'http/response.php';
+require_once __DIR__ . '/../http/request.php';
+require_once __DIR__ . '/../http/response.php';
 
 use sdk\http;
 

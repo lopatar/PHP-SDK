@@ -2,9 +2,9 @@
 
 namespace sdk;
 
-require_once $GLOBALS['APP_DIR'] . 'http/request.php';
-require_once $GLOBALS['APP_DIR'] . 'http/response.php';
-require_once $GLOBALS['APP_DIR'] . 'routing/route.php';
+require_once __DIR__ . '/http/request.php';
+require_once __DIR__ . '/http/response.php';
+require_once __DIR__ . '/routing/route.php';
 
 use sdk\http\request as request;
 use sdk\http\response as response;
