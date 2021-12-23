@@ -5,15 +5,16 @@ namespace sdk\http;
 class response
 {
     private array $headers;
+    private string $body;
     
-    public function add_header(string $name, string $value) : response
+    public function add_header(string $name, string $value) : self
     {
        $this->headers[] = "$name: $value";
        
        return $this;
     }
     
-    public function add_headers(array $headers) : response
+    public function add_headers(array $headers) : self
     {
         foreach ($headers as $header)
         {
@@ -30,11 +31,21 @@ class response
         return $this;
     }
     
+    public function set_body(string $body)
+    {
+        $this->body = $body;
+    }
+    
     public function send()
     {
-        foreach ($this->headers as $header)
+        if (!empty($this->headers))
         {
-            header($header);
+            foreach ($this->headers as $header)
+            {
+                header($header);
+            }
         }
+        
+        echo $this->body;
     }
 }

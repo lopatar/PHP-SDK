@@ -8,8 +8,9 @@ use sdk\app as app;
 
 $app = new app();
 
-$app->get('/test', function (request $request, response $response) {
-    
+$app->get('/test', function (request $request, response $response) : response {
+    $response->set_body('test executed');
+    return $response;
 });
 
 $app->run();

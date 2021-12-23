@@ -36,11 +36,9 @@ class route
         return true;
     }
     
-    public function execute(request $request) : route
+    public function execute(request $request) : response
     {
         $response = new response();
-        call_user_func_array($this->callback, [$request, $response]);
-        
-        return $this;
+        return call_user_func_array($this->callback, [$request, $response]);
     }
 }
