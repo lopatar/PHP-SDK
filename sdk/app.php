@@ -20,7 +20,7 @@ class app
         $this->request = new request();
     }
     
-    public function run()
+    public function run() : self
     {   
         $matched_route = null;
         
@@ -43,11 +43,11 @@ class app
             $response = new response();
             $protocol_version = $this->request->get_header('SERVER_PROTOCOL');
             
-            $response->add_headers([
-                "$protocol_version 404 Not Found"
-            ]);
+            $response->add_header_full("$protocol_version 404 Not found");
             $response->send();
         }
+        
+        return $this;
     }
     
     public function add_route(string $request_uri, array $methods, callable $callback) : route

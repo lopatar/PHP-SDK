@@ -14,6 +14,13 @@ class response
        return $this;
     }
     
+    public function add_header_full(string $header) : self
+    {
+        $this->headers[] = $header;
+        
+        return $this;
+    }
+    
     public function add_headers(array $headers) : self
     {
         foreach ($headers as $header)
@@ -31,12 +38,14 @@ class response
         return $this;
     }
     
-    public function set_body(string $body)
+    public function set_body(string $body) : self
     {
         $this->body = $body;
+        
+        return $this;
     }
     
-    public function send()
+    public function send() : self
     {
         if (!empty($this->headers))
         {
@@ -47,5 +56,7 @@ class response
         }
         
         echo $this->body;
+        
+        return $this;
     }
 }
