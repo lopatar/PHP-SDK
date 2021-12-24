@@ -34,6 +34,11 @@ class request
         return $this->headers[$key] ?? null;
     }
     
+    public function get_headers() : array
+    {
+        return $this->headers;
+    }
+    
     public function get_server_var($key)
     {
         return $this->server_array[$key] ?? null;

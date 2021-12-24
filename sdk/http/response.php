@@ -2,10 +2,17 @@
 
 namespace sdk\http;
 
+require_once __DIR__ . '/response_body.php';
+
 class response
 {
-    private array $headers;
-    private string $body;
+    private array $headers = [];
+    private response_body $response_body;
+    
+    public function __construct()
+    {
+        $this->response_body = new response_body();
+    }
     
     public function add_header(string $name, string $value) : self
     {
@@ -38,24 +45,19 @@ class response
         return $this;
     }
     
-    public function set_body(string $body) : self
+    public function get_body() : response_body
     {
-        $this->body = $body;
-        
-        return $this;
+        return $this->response_body;
     }
     
     public function send() : self
     {
-        if (!empty($this->headers))
+        foreach ($this->headers as $header)
         {
-            foreach ($this->headers as $header)
-            {
-                header($header);
-            }
+            header($header);
         }
         
-        echo $this->body;
+        $this->response_body->render();
         
         return $this;
     }

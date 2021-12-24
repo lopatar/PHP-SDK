@@ -5,6 +5,7 @@ namespace sdk;
 require_once __DIR__ . '/http/request.php';
 require_once __DIR__ . '/http/response.php';
 require_once __DIR__ . '/routing/route.php';
+require_once __DIR__ . '/render/view.php';
 
 use sdk\http\request as request;
 use sdk\http\response as response;
@@ -20,7 +21,7 @@ class app
         $this->request = new request();
     }
     
-    public function run() : self
+    public function run()
     {   
         $matched_route = null;
         
@@ -46,8 +47,6 @@ class app
             $response->add_header_full("$protocol_version 404 Not found");
             $response->send();
         }
-        
-        return $this;
     }
     
     public function add_route(string $request_uri, array $methods, callable $callback) : route
