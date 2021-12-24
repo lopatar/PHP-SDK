@@ -35,11 +35,6 @@ class response_body
         return $this;
     }
     
-    public function get_view()
-    {
-        return $this->view ?? null;
-    }
-    
     public function get_text()
     {
         return $this->text ?? null;

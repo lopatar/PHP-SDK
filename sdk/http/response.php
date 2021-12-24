@@ -32,13 +32,13 @@ class response
     {
         foreach ($headers as $header)
         {
-            if (count($header) === 1)
+            if (is_array($header))
             {
-                $this->headers[] = $header;
+                $this->headers[] = "$header[0]: $header[1]";
             }
             else
             {
-                $this->headers[] = "$header[0]: $header[1]";
+                $this->headers[] = $header;
             }
         }
         
