@@ -35,7 +35,7 @@ class response_body
         return $this;
     }
     
-    public function get_text()
+    public function get_text() : ?string
     {
         return $this->text ?? null;
     }

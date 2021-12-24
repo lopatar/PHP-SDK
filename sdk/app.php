@@ -23,6 +23,21 @@ class app
     
     public function run()
     {   
+        $matched_route = $this->match_route();
+        
+        if ($matched_route !== null)
+        {
+            $response = $matched_route->execute($this->request);
+            $response->send();
+        }
+        else
+        {
+            response::generate_404($this->request)->send();
+        }
+    }
+    
+    private function match_route() : ?route
+    {
         $matched_route = null;
         
         foreach ($this->routes as $route)
@@ -34,19 +49,7 @@ class app
             }
         }
         
-        if ($matched_route !== null)
-        {
-            $response = $matched_route->execute($this->request);
-            $response->send();
-        }
-        else
-        {
-            $response = new response();
-            $protocol_version = $this->request->get_server_var('SERVER_PROTOCOL');
-            
-            $response->add_header_full("$protocol_version 404 Not found");
-            $response->send();
-        }
+        return $matched_route;
     }
     
     public function add_route(string $request_uri, array $methods, callable $callback) : route

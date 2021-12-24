@@ -3,6 +3,7 @@
 namespace sdk\http;
 
 require_once __DIR__ . '/response_body.php';
+require_once __DIR__ . '/request.php';
 
 class response
 {
@@ -60,5 +61,15 @@ class response
         $this->response_body->render();
         
         return $this;
+    }
+    
+    public static function generate_404(request $request) : self
+    {
+        $response = new self();
+        $protocol_version = $request->get_server_var('SERVER_PROTOCOL');
+            
+        $response->add_header_full("$protocol_version 404 Not found");
+        
+        return $response;
     }
 }

@@ -9,8 +9,10 @@ use sdk\app as app;
 
 $app = new app();
 
+view::set_default_path(__DIR__ . '/../views/');
+
 $app->get('/', function (request $request, response $response, array $args) : response {
-    $home_view = new view(__DIR__ . '/../views/home.html');
+    $home_view = new view('home.html');
     $response->get_body()->set_view($home_view);
     
     return $response;
