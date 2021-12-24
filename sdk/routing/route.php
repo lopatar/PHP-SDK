@@ -8,117 +8,155 @@ require_once __DIR__ . '/../http/response.php';
 use sdk\http\request as request;
 use sdk\http\response as response;
 
+
 class route
 {
     private string $request_uri;
-    private array $request_uri_parts;
+    private array $request_uri_array;
     private array $request_methods;
-    private array $request_uri_parameters = [];
     private $callback;
+    
+    private array $extracted_parameters = [];
     
     public function __construct(string $request_uri, array $methods, callable $callback)
     {        
         $this->request_uri = $request_uri;
-        $this->request_uri_parts = explode('/', $request_uri);
+        $this->request_uri_array = explode('/', $request_uri);
         $this->request_methods = $methods;
         $this->callback = $callback;
     }
     
     public function match(request $request) : bool
-    {
-        $curr_request_uri = $request->get_server_var('REQUEST_URI');
-        
-        if (!in_array($request->get_server_var('REQUEST_METHOD'), $this->request_methods))
+    {   
+        if (!$this->matches_request_method($request))
         {
             return false;
         }
         
         if ($this->has_parameters())
         {
-           $curr_request_uri_parts = explode('/', $curr_request_uri);
-           
-           if (count($curr_request_uri_parts) !== count($this->request_uri_parts))
-           {
-               return false;
-           }
-           
-           $parameters = $this->get_parameters();
-           
-           if ($this->uri_except_params($curr_request_uri_parts, $parameters) !== $this->uri_except_params($this->request_uri_parts, $parameters))
-           {
-               return false;
-           }
-           
-           foreach ($parameters as $name => $index)
-           {
-               if (empty($curr_request_uri_parts[$index]))
-               {
-                   return false;
-               }
-               $name = str_replace(['{', '}'], '', $name);
-               $this->request_uri_parameters[$name] = $curr_request_uri_parts[$index];
-           }
-        }
-        else
-        {
-            if ($curr_request_uri !== $this->request_uri)
+            $curr_request_uri_array = explode('/', $request->get_server_var('REQUEST_URI'));
+            
+            if (!$this->matches_request_uri_count($curr_request_uri_array))
             {
                 return false;
             }
+            
+            $parameters = $this->get_parameters();
+            
+            if (!$this->matches_parameterless_array($curr_request_uri_array, $parameters))
+            {
+                return false;
+            }
+            
+            $extracted_parameters = $this->extract_parameters($curr_request_uri_array, $parameters);
+            
+            if ($extracted_parameters === [])
+            {
+                return false;
+            }
+            
+            $this->extracted_parameters = $extracted_parameters;
+        }
+        else
+        {
+           return $this->matches_request_uri($request);
         }
         
         return true;
     }
     
+    private function matches_request_method(request $request) : bool
+    {
+        return in_array($request->get_server_var('REQUEST_METHOD'), $this->request_methods);
+    }
+    
+    private function matches_request_uri(request $request) : bool
+    {
+        return $request->get_server_var('REQUEST_URI') === $this->request_uri;
+    }
+    
+    private function matches_request_uri_count(array $curr_request_uri_array) : bool
+    {
+        return count($curr_request_uri_array) == count($this->request_uri_array);
+    }
+    
+    private function matches_parameterless_array(array $curr_request_uri_array, array $parameters)
+    {
+        return $this->uri_except_parameters($curr_request_uri_array, $parameters) === $this->uri_except_parameters($this->request_uri_array, $parameters);
+    }
+    
     private function get_parameters() : array
     {
-        $indices = [];
+        $parameters = [];
         
-        for ($i = 0; $i < count($this->request_uri_parts); $i++)
+        for ($i = 0; $i < count($this->request_uri_array); $i++)
         {
-            $uri_part = $this->request_uri_parts[$i];
+            $uri_part = $this->request_uri_array[$i];
             
             if (empty($uri_part))
             {
                 continue;
             }
             
-            if ($uri_part[0] === '{')
+            $end_index = strlen($uri_part) - 1;
+            
+            if ($uri_part[0] === '{' && $uri_part[$end_index] === '}')
             {
-                $indices[$uri_part] = $i;
+                $name = str_replace(['{', '}'], '', $uri_part);
+                $parameters[$name] = $i;
             }
         }
         
-        return $indices;
+        return $parameters;
     }
     
-    private function uri_except_params(array $request_uri_parts, array $indices) : string
+    private function uri_except_parameters(array $request_uri_array, array $parameters) : string
     {
-        $new_uri = '';
+        $uri = '';
         
-        for ($i = 0; $i < count($request_uri_parts); $i++)
+        for ($i = 0; $i < count($request_uri_array); $i++)
         {
-            if (in_array($i, $indices))
+            if (in_array($i, $parameters))
             {
                 continue;
             }
             
-            $new_uri .= $request_uri_parts[$i];
+            $uri .= $request_uri_array[$i];
         }
         
-        return $new_uri;
+        return $uri;        
+    }
+    
+    private function extract_parameters(array $curr_request_uri_array, array $parameters) : array
+    {
+        $extracted_parameters = [];
+        
+        foreach ($parameters as $name => $index)
+        {
+            if (empty($curr_request_uri_array[$index]))
+            {
+                return [];
+            }
+            
+            $extracted_parameters[$name] = $curr_request_uri_array[$index];
+        }
+        
+        return $extracted_parameters;
     }
     
     private function has_parameters() : bool
     {   
-        foreach ($this->request_uri_parts as $uri_part)
+        foreach ($this->request_uri_array as $uri_part)
         {   
             if (empty($uri_part))
             {
                 continue;
             }
             
-            if ($uri_part[0] === '{')
+            $end_index = strlen($uri_part) - 1;
+            
+            if ($uri_part[0] === '{' && $uri_part[$end_index] === '}')
             {
                 return true;
             }
@@ -130,6 +168,6 @@ class route
     public function execute(request $request) : response
     {
         $response = new response();
-        return call_user_func_array($this->callback, [$request, $response, $this->request_uri_parameters]);
+        return call_user_func_array($this->callback, [$request, $response, $this->extracted_parameters]);
     }
 }
