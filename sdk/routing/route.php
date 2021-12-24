@@ -78,10 +78,10 @@ class route
     
     private function matches_request_uri_count(array $curr_request_uri_array) : bool
     {
-        return count($curr_request_uri_array) == count($this->request_uri_array);
+        return count($curr_request_uri_array) === count($this->request_uri_array);
     }
     
-    private function matches_parameterless_array(array $curr_request_uri_array, array $parameters)
+    private function matches_parameterless_array(array $curr_request_uri_array, array $parameters) : bool
     {
         return $this->uri_except_parameters($curr_request_uri_array, $parameters) === $this->uri_except_parameters($this->request_uri_array, $parameters);
     }
