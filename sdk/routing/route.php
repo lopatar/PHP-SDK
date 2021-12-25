@@ -147,22 +147,7 @@ class route
     
     private function has_parameters() : bool
     {   
-        foreach ($this->request_uri_array as $uri_part)
-        {   
-            if (empty($uri_part))
-            {
-                continue;
-            }
-            
-            $end_index = strlen($uri_part) - 1;
-            
-            if ($uri_part[0] === '{' && $uri_part[$end_index] === '}')
-            {
-                return true;
-            }
-        }
-        
-        return false;
+        return $this->get_parameters() !== [];
     }
     
     public function execute(request $request) : response
