@@ -19,17 +19,17 @@ class request
         $this->headers = getallheaders();
     }
     
-    public function get_post($key)
+    public function get_post(string $key)
     {        
         return $this->post_array[$key] ?? null;
     }
     
-    public function get_get($key)
+    public function get_get(string $key)
     {
         return $this->get_array[$key] ?? null;
     }
     
-    public function get_header($key)
+    public function get_header(string $key)
     {
         return $this->headers[$key] ?? null;
     }
@@ -39,12 +39,12 @@ class request
         return $this->headers;
     }
     
-    public function get_server_var($key)
+    public function get_server_var(string $key)
     {
         return $this->server_array[$key] ?? null;
     }
     
-    public function get_cookie($key)
+    public function get_cookie(string $key)
     {
         return $this->cookie_array[$key] ?? null;
     }
