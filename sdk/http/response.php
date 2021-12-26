@@ -9,10 +9,25 @@ class response
 {
     private array $headers = [];
     private response_body $response_body;
+    private int $status_code = 200;
     
     public function __construct()
     {
         $this->response_body = new response_body();
+    }
+    
+    public function set_status_code(int $code) : self
+    {
+        $this->status_code = $code;
+        
+        return $this;
+    }
+    
+    public function get_status_code() : self
+    {
+        return $this->status_code;
+        
+        return $this;
     }
     
     public function add_header(string $name, string $value) : self
@@ -53,6 +68,8 @@ class response
     
     public function send() : self
     {
+        http_response_code($this->status_code);
+        
         foreach ($this->headers as $header)
         {
             header($header);
@@ -61,15 +78,5 @@ class response
         $this->response_body->render();
         
         return $this;
-    }
-    
-    public static function generate_404(request $request) : self
-    {
-        $response = new self();
-        $protocol_version = $request->get_server_var('SERVER_PROTOCOL');
-            
-        $response->add_header_full("$protocol_version 404 Not found");
-        
-        return $response;
     }
 }

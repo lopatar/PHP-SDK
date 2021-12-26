@@ -4,16 +4,18 @@ namespace sdk\routing;
 
 require_once __DIR__ . '/../http/request.php';
 require_once __DIR__ . '/../http/response.php';
+require_once __DIR__ . '/../interfaces/middleware.php';
 
 use sdk\http\request as request;
 use sdk\http\response as response;
-
+use sdk\interfaces\middleware as middleware;
 
 class route
 {
     private string $request_uri;
     private array $request_uri_array;
     private array $request_methods;
+    private array $middleware = [];
     private $callback;
     
     private array $extracted_parameters = [];
@@ -64,6 +66,24 @@ class route
         }
         
         return true;
+    }
+    
+    public function add_middleware(middleware $middleware) : self
+    {        
+        $this->middleware[] = $middleware;
+        
+        return $this;
+    }
+    
+    
+    public function add_middleware_array(array $middleware_array) : self
+    {
+        foreach ($middleware_array as $middleware)
+        {
+            $this->add_middleware($middleware);
+        }
+        
+        return $this;
     }
     
     private function matches_request_method(request $request) : bool
@@ -165,9 +185,19 @@ class route
         return false;
     }
     
-    public function execute(request $request) : response
+    private function run_middleware(request $request, response $response) : response
     {
-        $response = new response();
+        foreach ($this->middleware as $middleware)
+        {
+            $response = $middleware->execute($request, $response);
+        }
+        
+        return $response;
+    }
+    
+    public function execute(request $request, response $response) : response
+    {
+        $response = $this->run_middleware($request, $response);
         return call_user_func_array($this->callback, [$request, $response, $this->extracted_parameters]);
     }
 }

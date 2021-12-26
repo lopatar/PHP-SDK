@@ -6,33 +6,66 @@ require_once __DIR__ . '/http/request.php';
 require_once __DIR__ . '/http/response.php';
 require_once __DIR__ . '/routing/route.php';
 require_once __DIR__ . '/render/view.php';
+require_once __DIR__ . '/interfaces/middleware.php';
 
 use sdk\http\request as request;
 use sdk\http\response as response;
 use sdk\routing\route as route;
+use sdk\interfaces\middleware as middleware;
 
 class app
 {
     private request $request;
-    private array $routes;
+    private response $response;
+    private array $routes = [];
+    private array $middleware = [];
     
     public function __construct()
     {
         $this->request = new request();
+        $this->response = new response();
     }
     
     public function run()
     {   
+        $this->run_middleware();
         $matched_route = $this->match_route();
         
         if ($matched_route !== null)
         {
-            $response = $matched_route->execute($this->request);
-            $response->send();
+            $response = $matched_route->execute($this->request, $this->response);
         }
         else
         {
-            response::generate_404($this->request)->send();
+           $this->response->set_status_code(404);
+        }
+        
+        $this->response->send();
+    }
+    
+    public function add_middleware(middleware $middleware) : self
+    {        
+        $this->middleware[] = $middleware;
+        
+        return $this;
+    }
+    
+    
+    public function add_middleware_array(array $middleware_array) : self
+    {
+        foreach ($middleware_array as $middleware)
+        {
+            $this->add_middleware($middleware);
+        }
+        
+        return $this;
+    }
+    
+    private function run_middleware()
+    {
+        foreach ($this->middleware as $middleware)
+        {
+            $this->response = $middleware->execute($this->request, $this->response);
         }
     }
     

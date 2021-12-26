@@ -13,11 +13,6 @@ class response_body
     
     public function set_view(view $view) : self
     {
-        if ($this->text !== null)
-        {
-            $this->text = null;
-        }
-        
         $this->view = $view;
         
         return $this;
@@ -25,12 +20,7 @@ class response_body
     
     public function write(string $text) : self
     {
-        if ($this->view !== null)
-        {
-            $this->view = null;
-        }
-        
-        $this->text = $text;
+        $this->text .= $text;
         
         return $this;
     }
