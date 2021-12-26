@@ -33,7 +33,7 @@ class app
         
         if ($matched_route !== null)
         {
-            $response = $matched_route->execute($this->request, $this->response);
+            $this->response = $matched_route->execute($this->request, $this->response);
         }
         else
         {
