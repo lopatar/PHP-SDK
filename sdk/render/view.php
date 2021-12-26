@@ -10,7 +10,9 @@ class view
     public function __construct(string $name, ?string $default_path = null)
     {        
         if (self::$default_path === null)
-            throw new Exception('view default path must be set');
+        {
+            throw new \Exception('view default path must be set');   
+        }
         
         $this->name = $name;
     }
