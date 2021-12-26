@@ -49,3 +49,7 @@ $app->add_middleware(new middleware\app());
 
 $app->run();
 ```
+
+# Usage in production
+
+I seriously advise against using this SDK in production, because it hasn't been properly tested
