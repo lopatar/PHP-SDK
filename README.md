@@ -11,15 +11,18 @@ However here's a quick paste of the current file contents.
 <?php
 
 require __DIR__ . '/../sdk/app.php';
+require __DIR__ . '/../app/middleware/app.php';
+require __DIR__ . '/../app/middleware/route.php';
 
 use sdk\http\request as request;
 use sdk\http\response as response;
 use sdk\render\view as view;
 use sdk\app as app;
+use app\middleware;
 
 $app = new app();
 
-view::set_default_path(__DIR__ . '/../views/');
+view::set_default_path(__DIR__ . '/../app/views/');
 
 $app->get('/', function (request $request, response $response, array $args) : response {
     $home_view = new view('home.html');
@@ -40,7 +43,9 @@ $app->get('/hello/{first}/{second}', function (request $request, response $respo
     $response->get_body()->write("Hi: $first $second");
     
     return $response;
-});
+})->add_middleware(new middleware\route());
+
+$app->add_middleware(new middleware\app());
 
 $app->run();
 ```
