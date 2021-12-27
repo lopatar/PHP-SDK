@@ -10,11 +10,11 @@ use sdk\interfaces\middleware;
 use sdk\http\request as request;
 use sdk\http\response as response;
 
-class app implements middleware
+class test implements middleware
 {
     public function execute(request $request, response $response) : response
     {
-        $response->get_body()->write('App middleware executed ');
+        $response->get_body()->write('Middleware executed ');
         return $response;
     }
 }

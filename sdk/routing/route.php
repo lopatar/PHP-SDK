@@ -192,6 +192,11 @@ class route
             $response = $middleware->execute($request, $response);
         }
         
+        if (!$response->is_status_ok())
+        {
+            $response->send();
+        }
+        
         return $response;
     }
     

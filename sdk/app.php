@@ -67,6 +67,11 @@ class app
         {
             $this->response = $middleware->execute($this->request, $this->response);
         }
+        
+        if (!$this->response->is_status_ok())
+        {
+            $this->response->send();
+        }
     }
     
     private function match_route() : ?route

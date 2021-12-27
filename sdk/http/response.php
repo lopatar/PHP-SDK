@@ -61,12 +61,17 @@ class response
         return $this;
     }
     
+    public function is_status_ok() : bool
+    {
+        return $this->status_code === 200;
+    }
+    
     public function get_body() : response_body
     {
         return $this->response_body;
     }
     
-    public function send() : self
+    public function send()
     {
         http_response_code($this->status_code);
         
@@ -77,6 +82,6 @@ class response
         
         $this->response_body->render();
         
-        return $this;
+        die();
     }
 }
