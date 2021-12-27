@@ -26,8 +26,6 @@ class response
     public function get_status_code() : self
     {
         return $this->status_code;
-        
-        return $this;
     }
     
     public function add_header(string $name, string $value) : self
