@@ -1,3 +1,5 @@
+# This repository is archived!
+
 # About
 
 This PHP SDK has been created for the sole purpose of me trying to understand PHP frameworks by mimicing their features on my own.
