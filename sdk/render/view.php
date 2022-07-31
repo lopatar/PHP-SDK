@@ -1,8 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace sdk\render;
 
-class view
+use Exception;
+
+final class view
 {
     private string $name;
     private static ?string $default_path = null;
@@ -11,7 +14,7 @@ class view
     {        
         if (self::$default_path === null)
         {
-            throw new \Exception('view default path must be set');   
+            throw new Exception('view default path must be set');
         }
         
         $this->name = $name;
@@ -25,5 +28,10 @@ class view
     public function render()
     {
         require self::$default_path . $this->name;
+    }
+    
+    public function get_content() : string
+    {
+        return file_get_contents(self::$default_path . $this->name);
     }
 }

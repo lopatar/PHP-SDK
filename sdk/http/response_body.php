@@ -1,12 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace sdk\http;
 
-require_once __DIR__ . '/../render/view.php';
-
 use sdk\render\view;
 
-class response_body
+final class response_body
 {
     private ?string $text = null;
     private ?view $view = null;
@@ -32,14 +31,14 @@ class response_body
     
     public function render() : self
     {
-        if ($this->view !== null)
-        {
-            $this->view->render();
-        }
-        
         if ($this->text !== null)
         {
             echo $this->text;
+        }
+        
+        if ($this->view !== null)
+        {
+            $this->view->render();
         }
         
         return $this;

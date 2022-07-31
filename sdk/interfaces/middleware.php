@@ -1,12 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace sdk\interfaces;
 
-require_once __DIR__ . '/../http/request.php';
-require_once __DIR__ . '/../http/response.php';
-
-use sdk\http\response as response;
-use sdk\http\request as request;
+use sdk\http\response;
+use sdk\http\request;
 
 interface middleware
 {

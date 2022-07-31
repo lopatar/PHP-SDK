@@ -1,16 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace sdk\routing;
 
-require_once __DIR__ . '/../http/request.php';
-require_once __DIR__ . '/../http/response.php';
-require_once __DIR__ . '/../interfaces/middleware.php';
+use sdk\http\request;
+use sdk\http\response;
+use sdk\interfaces\middleware;
 
-use sdk\http\request as request;
-use sdk\http\response as response;
-use sdk\interfaces\middleware as middleware;
-
-class route
+final class route
 {
     private string $request_uri;
     private array $request_uri_array;
@@ -37,7 +34,8 @@ class route
         
         if ($this->has_parameters())
         {
-            $curr_request_uri_array = explode('/', $request->get_server_var('REQUEST_URI'));
+            $r_uri = explode('?', $request->get_server_var('REQUEST_URI'))[0];
+            $curr_request_uri_array = explode('/', $r_uri);
             
             if (!$this->matches_request_uri_count($curr_request_uri_array))
             {
@@ -93,7 +91,8 @@ class route
     
     private function matches_request_uri(request $request) : bool
     {
-        return $request->get_server_var('REQUEST_URI') === $this->request_uri;
+        $request_uri = explode('?', $request->get_server_var('REQUEST_URI'))[0];
+        return $request_uri === $this->request_uri;
     }
     
     private function matches_request_uri_count(array $curr_request_uri_array) : bool
@@ -190,11 +189,11 @@ class route
         foreach ($this->middleware as $middleware)
         {
             $response = $middleware->execute($request, $response);
-        }
-        
-        if (!$response->is_status_ok())
-        {
-            $response->send();
+            
+            if (!$response->is_status_ok())
+            {
+                $response->send();
+            }
         }
         
         return $response;
@@ -202,6 +201,7 @@ class route
     
     public function execute(request $request, response $response) : response
     {
+        $GLOBALS['ROUTE_PARAMS'] = $this->extracted_parameters;
         $response = $this->run_middleware($request, $response);
         return call_user_func_array($this->callback, [$request, $response, $this->extracted_parameters]);
     }

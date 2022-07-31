@@ -1,29 +1,38 @@
 <?php
+declare(strict_types=1);
 
 namespace sdk;
 
-require_once __DIR__ . '/http/request.php';
-require_once __DIR__ . '/http/response.php';
-require_once __DIR__ . '/routing/route.php';
-require_once __DIR__ . '/render/view.php';
-require_once __DIR__ . '/interfaces/middleware.php';
+use sdk\http\request;
+use sdk\http\response;
+use sdk\routing\route;
+use sdk\interfaces\middleware;
+use sdk\render\view;
 
-use sdk\http\request as request;
-use sdk\http\response as response;
-use sdk\routing\route as route;
-use sdk\interfaces\middleware as middleware;
-
-class app
+final class app
 {
     private request $request;
     private response $response;
     private array $routes = [];
     private array $middleware = [];
+    private ?view $not_found_view = null;
     
-    public function __construct()
+    public function __construct(view $not_found_view = null)
     {
         $this->request = new request();
         $this->response = new response();
+        
+        if ($not_found_view !== null)
+        {
+            $this->not_found_view = $not_found_view;
+        }
+    }
+    
+    public function set_not_found_view(view $not_found_view) : self
+    {
+        $this->not_found_view = $not_found_view;
+        
+        return $this;
     }
     
     public function run()
@@ -37,11 +46,19 @@ class app
         }
         else
         {
+            if ($this->not_found_view !== null)
+            {
+                $this->response->get_body()->set_view($this->not_found_view);
+            }
+            
            $this->response->set_status_code(404);
+           $GLOBALS['ROUTE_PARAMS'] = [];
         }
         
         $this->response->send();
     }
+    
+    
     
     public function add_middleware(middleware $middleware) : self
     {        
@@ -66,11 +83,11 @@ class app
         foreach ($this->middleware as $middleware)
         {
             $this->response = $middleware->execute($this->request, $this->response);
-        }
-        
-        if (!$this->response->is_status_ok())
-        {
-            $this->response->send();
+            
+            if (!$this->response->is_status_ok())
+            {
+                $this->response->send();
+            }
         }
     }
     

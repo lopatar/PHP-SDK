@@ -1,11 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace sdk\http;
 
-require_once __DIR__ . '/response_body.php';
-require_once __DIR__ . '/request.php';
-
-class response
+final class response
 {
     private array $headers = [];
     private response_body $response_body;
@@ -23,7 +21,7 @@ class response
         return $this;
     }
     
-    public function get_status_code() : self
+    public function get_status_code() : int
     {
         return $this->status_code;
     }
