@@ -1,5 +1,3 @@
-# This repository is archived!
-
 # About
 
 This PHP SDK has been created for the sole purpose of me trying to understand PHP frameworks by mimicing their features on my own.
@@ -12,14 +10,10 @@ However here's a quick paste of the current file contents.
 ```
 <?php
 
-require __DIR__ . '/../sdk/app.php';
-require __DIR__ . '/../app/middleware/test.php';
-require __DIR__ . '/../app/middleware/auth.php';
-
-use sdk\http\request as request;
-use sdk\http\response as response;
-use sdk\render\view as view;
-use sdk\app as app;
+use sdk\http\request;
+use sdk\http\response;
+use sdk\render\view;
+use sdk\app;
 use app\middleware;
 
 $app = new app();
