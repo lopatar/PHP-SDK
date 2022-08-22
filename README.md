@@ -54,6 +54,3 @@ $app->get('/admin', function (request $request, response $response, array $args)
 $app->run();
 ```
 
-# Usage in production
-
-I seriously advise against using this SDK in production, because it hasn't been properly tested
