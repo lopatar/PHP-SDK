@@ -7,7 +7,7 @@ This PHP SDK has been created for the sole purpose of me trying to understand PH
 Most accurate usage info can be seen in the [public/index.php](https://github.com/lopatar/PHP-SDK/blob/master/public/index.php) file. 
 However here's a quick paste of the current file contents.
 
-```
+```php
 <?php
 
 use sdk\http\request;
