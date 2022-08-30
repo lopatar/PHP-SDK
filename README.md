@@ -1,11 +1,13 @@
 # About
 
-This PHP SDK has been created for the sole purpose of me trying to understand PHP frameworks by mimicing their features on my own.
+This PHP SDK has been created for the sole purpose of me trying to understand PHP frameworks by mimicing their features
+on my own.
 
 # Usage
 
-Most accurate usage info can be seen in the [public/index.php](https://github.com/lopatar/PHP-SDK/blob/master/public/index.php) file. 
-However here's a quick paste of the current file contents.
+Most accurate usage info can be seen in
+the [public/index.php](https://github.com/lopatar/PHP-SDK/blob/master/public/index.php) file.
+However, here's a quick paste of the current file contents.
 
 ```php
 <?php
