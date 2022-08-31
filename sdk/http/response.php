@@ -63,7 +63,7 @@ final class response
 		return $this->response_body;
 	}
 
-	public function send()
+	public function send(): never
 	{
 		http_response_code($this->status_code);
 
